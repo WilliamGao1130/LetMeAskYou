@@ -69,7 +69,7 @@ def save_history(rolerc, contentrc):
         "role": rolerc,
         "content": contentrc
     }
-    
+    print(record)
     get_data=[]
     # 1. 读取现有JSON文件
     with open(json_file_path, 'r', encoding='utf-8') as rf:
@@ -79,7 +79,7 @@ def save_history(rolerc, contentrc):
         get_data.insert(0, sysmes[0])  # 在列表开头添加系统消息
     # 3. 添加新字典到列表中
     get_data.append(record)
-
+    print(get_data)
     # 4. 写回文件
     with open(json_file_path, 'w', encoding='utf-8') as wf:
         json.dump(get_data, wf, ensure_ascii=False, indent=4)  # indent参数使输出更易读
@@ -91,12 +91,13 @@ def save_file_reference(file_path):
     """保存文件引用到历史记录"""
     relative_path = get_relative_file_path(file_path)
     save_history("file", relative_path)
+    print("文件引用已保存到历史记录")
 
 
 
 def main():
     # 获取环境变量 FILEPATH
-    file_path = os.getenv('FILEPATH')
+    file_path = os.getenv('GET_FILEPATH')
     if not file_path:
         print("错误: 未设置环境变量 FILEPATH")
         sys.exit(1)
@@ -104,7 +105,6 @@ def main():
     # 保存文件引用到历史记录
     save_file_reference(file_path)
 
-if __name__ == "__main__":
-    main()
+main()
 
 
