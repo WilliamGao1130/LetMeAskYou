@@ -5,7 +5,7 @@ import json
 def show_history():
     history_dir = os.getenv('HISTORY_DIR')
     # 检查历史记录目录是否存在
-    if not os.path.exists(history_dir):
+    if not history_dir or not os.path.exists(history_dir):
         print(f"历史记录目录不存在: {history_dir}")
         return
     
