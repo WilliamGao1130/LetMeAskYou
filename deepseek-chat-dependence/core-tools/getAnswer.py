@@ -131,7 +131,7 @@ def get_streaming_response(messages):
     
     model_name= os.getenv('MODEL_NAME')
     if not model_name:
-        model_name = "deepseek-reasoner"
+        model_name = "deepseek-chat"
     client = OpenAI(
         api_key=api_key,
         base_url=model_url

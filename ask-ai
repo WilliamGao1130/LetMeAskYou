@@ -32,7 +32,7 @@ CLEAR_HISTORY="false"
 export SET_PROMPT=""
 export MAX_HISTORY="100"  # 默认使用的最大历史记录数
 export MODEL_URL="https://api.deepseek.com"  # 默认的模型 URL
-export MODEL_NAME="deepseek-reasoner"
+export MODEL_NAME="deepseek-chat"
 show_help() {
     echo "用法: $0 [选项]"
     echo "选项:"
@@ -41,10 +41,11 @@ show_help() {
     echo "  --clear_history                   清除当前会话的历史记录"
     echo "  --set_prompt <prompt>             设置自定义提示词"
     echo "  --set_max_history_number <number> 设置最大历史记录数 (默认: 100)"
-    echo "  --model-url <url>                 设置模型 URL (默认: https://api.deepseek.com)"
-    echo "  --model-name <name>               设置模型名称 (默认: deepseek-chat)"
+    echo "  --model_url <url>                 设置模型 URL (默认: https://api.deepseek.com)"
+    echo "  --model_name <name>               设置模型名称 (默认: deepseek-chat)"
     echo "  --ask <question>                  提问 DeepSeek Chat"
-    echo "  --add_file <filepath>            Add a file to the session"
+    echo "  --add_file <filepath>             添加文件到会话"
+    echo "  --remove_file                     移除文件引用"
     echo "  --help                            显示此帮助信息"
     echo ""
     echo "示例:"
@@ -77,14 +78,16 @@ while [[ $# -gt 0 ]]; do
             SET_PROMPT="$2"; shift 2 ;;
         --set_max_history_number|-mh)
             MAX_HISTORY="$2"; shift 2 ;;
-        --model-url)
+        --model_url)
             MODEL_URL="$2"; shift 2 ;;
-        --model-name)
+        --model_name)
             MODEL_NAME="$2"; shift 2 ;;
         --add_file|-af)
             FILEPATH="$2"; shift 2
             export GET_FILEPATH="$FILEPATH"
             ;;
+        --remove_file|-rf)
+            REMOVE_FILE="true"; shift 1 ;;
         --help|-h)
             show_help; shift 1 ;;
         *)
@@ -128,6 +131,9 @@ case "$HISTORY_OPERATION" in
         ;;
 esac
 
+if [ -n "$REMOVE_FILE" ]; then
+    python3 $SCRIPT_DIR/deepseek-chat-dependence/core-tools/clear_file.py
+fi
 
 # if ["$QUESTION"==""]; then
 # else 
