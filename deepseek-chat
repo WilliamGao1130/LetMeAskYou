@@ -1,0 +1,143 @@
+#!/bin/bash
+
+# 获取脚本所在目录
+export SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export DEPENDENCE_DIR="${SCRIPT_DIR}/deepseek-chat-dependence"
+export HISTORY_DIR="${DEPENDENCE_DIR}/chat_history"
+
+# 确保目录存在
+mkdir -p "$DEPENDENCE_DIR"
+mkdir -p "$HISTORY_DIR"
+
+# 上次会话记录文件
+LAST_SESSION_FILE="${DEPENDENCE_DIR}/last_session.txt"
+
+# 检查虚拟环境是否存在
+VENV_PATH="${HOME}/Documents/python/bin/activate"
+if [ ! -f "$VENV_PATH" ]; then
+    echo "错误：未找到虚拟环境 $VENV_PATH"
+    exit 1
+fi
+source "$VENV_PATH"
+
+
+
+
+# —— 解析命令行参数 —— #
+export SESSION=""
+export QUESTION=""
+HISTORY_OPERATION=""
+SHOW_HISTORY="false"
+CLEAR_HISTORY="false"
+export SET_PROMPT=""
+export MAX_HISTORY="100"  # 默认使用的最大历史记录数
+export MODEL_URL="https://api.deepseek.com"  # 默认的模型 URL
+export MODEL_NAME="deepseek-reasoner"
+show_help() {
+    echo "用法: $0 [选项]"
+    echo "选项:"
+    echo "  --session <session>               设置会话 (默认: default)"
+    echo "  --show_history                    显示当前会话的历史记录"
+    echo "  --clear_history                   清除当前会话的历史记录"
+    echo "  --set_prompt <prompt>             设置自定义提示词"
+    echo "  --set_max_history_number <number> 设置最大历史记录数 (默认: 100)"
+    echo "  --model-url <url>                 设置模型 URL (默认: https://api.deepseek.com)"
+    echo "  --model-name <name>               设置模型名称 (默认: deepseek-chat)"
+    echo "  --ask <question>                  提问 DeepSeek Chat"
+    echo "  --add_file <filepath>            Add a file to the session"
+    echo "  --help                            显示此帮助信息"
+    echo ""
+    echo "示例:"
+    echo "  $0 --session my_session --show_history"
+    echo "  $0 --session my_session --ask '你好，DeepSeek!'"
+    echo "  $0 --set_prompt '请回答以下问题：' --ask '今天天气怎么样？'"
+}
+
+
+# 检查 API 密钥
+if [ -z "$DEEPSEEK_API_KEY" ]; then
+    echo "错误：未设置环境变量 DEEPSEEK_API_KEY"
+    echo "请将以下命令添加到 ~/.zshrc 或 ~/.bash_profile 并执行 source："
+    echo 'export DEEPSEEK_API_KEY="您的API密钥"'
+    exit 1
+fi
+
+export GET_SESSION=""
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --session|-s)
+            GET_SESSION="$2"; shift 2 ;;
+        --ask|-a)
+            QUESTION="$2"; shift 2 ;;
+        --show_history|-sh)
+            SHOW_HISTORY="true"; HISTORY_OPERATION="show_history"; shift ;;
+        --clear_history|-ch)
+            CLEAR_HISTORY="true"; HISTORY_OPERATION="clear_history"; shift ;;
+        --set_prompt|-sprompt)
+            SET_PROMPT="$2"; shift 2 ;;
+        --set_max_history_number|-mh)
+            MAX_HISTORY="$2"; shift 2 ;;
+        --model-url)
+            MODEL_URL="$2"; shift 2 ;;
+        --model-name)
+            MODEL_NAME="$2"; shift 2 ;;
+        --add_file|-af)
+            FILEPATH="$2"; shift 2
+            export FILEPATH
+            python3 $SCRIPT_DIR/deepseek-chat-dependence/core-tools/add_file.py
+            ;;
+        --help|-h)
+            show_help; shift 1 ;;
+        *)
+            QUESTION+=" $1"
+            shift 1 ;;
+    esac
+done
+
+# 检查文件是否存在
+if [ -n "$GET_SESSION" ]; then
+    # 如果文件不存在但提供了会话参数，则使用该参数
+    export SESSION="$GET_SESSION"
+    echo "$SESSION" > "$LAST_SESSION_FILE"
+elif [ -f "$LAST_SESSION_FILE" ]; then
+    # 读取文件内容并赋值给SESSION变量
+    export SESSION=$(<"$LAST_SESSION_FILE")
+elif [ -z "$SESSION" ]; then
+    # 如果都没有提供，则使用默认会话
+    export SESSION="default"
+    echo "default" > "$LAST_SESSION_FILE"
+else
+    export SESSION="default"
+    echo "default" > "$LAST_SESSION_FILE"
+fi
+
+
+
+# 检查是否提供了对话
+# if[HISTORY_OPERATION == "show_history" ]; then
+#     python3 ./deepseek-chat-dependence/core-tools/show_history.py
+# elif[HISTORY_OPERATION == "clear_history" ]; then
+#     python3 ./deepseek-chat-dependence/core-tools/clear_history.py
+# fi
+case "$HISTORY_OPERATION" in
+    show_history)
+        python3 $SCRIPT_DIR/deepseek-chat-dependence/core-tools/show_history.py
+        ;;
+    clear_history)
+        python3 $SCRIPT_DIR/deepseek-chat-dependence/core-tools/clear_history.py
+        ;;
+esac
+
+
+# if ["$QUESTION"==""]; then
+# else 
+#     python3 ./deepseek-chat-dependence/core-tools/getAnswer.py
+# fi
+case "$QUESTION" in
+    "")
+        exit 1
+        ;;
+    *)
+        python3 $SCRIPT_DIR/deepseek-chat-dependence/core-tools/getAnswer.py
+        ;;
+esac
