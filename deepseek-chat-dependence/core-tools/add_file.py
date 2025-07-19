@@ -79,7 +79,7 @@ def save_history(rolerc, contentrc):
         get_data.insert(0, sysmes[0])  # 在列表开头添加系统消息
     # 3. 添加新字典到列表中
     get_data.append(record)
-    print(get_data)
+    # print(get_data)
     # 4. 写回文件
     with open(json_file_path, 'w', encoding='utf-8') as wf:
         json.dump(get_data, wf, ensure_ascii=False, indent=4)  # indent参数使输出更易读
