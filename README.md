@@ -27,6 +27,7 @@
      python --version
      pip --version
      ```
+  4. 进入安装目录，将python文件复制一份，重命名为python3。
 
 ### 2. 创建虚拟环境
 1. 打开终端或命令提示符。
