@@ -102,6 +102,8 @@
      set DEEPSEEK-API-KEY=your-api-key
      ```
 
+- 若要每次都用，请将其加入系统环境变量。
+
 大功告成！
 
 ## 使用
