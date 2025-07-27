@@ -45,7 +45,7 @@ show_help() {
     echo "  --model_name <name>               设置模型名称 (默认: deepseek-chat)"
     echo "  --ask <question>                  提问 DeepSeek Chat"
     echo "  --add_file <filepath>             添加文件到会话"
-    echo "  --remove_file                     移除文件引用"
+    echo "  --clear_file                      移除文件引用"
     echo "  --help                            显示此帮助信息"
     echo ""
     echo "示例:"
@@ -86,7 +86,7 @@ while [[ $# -gt 0 ]]; do
             FILEPATH="$2"; shift 2
             export GET_FILEPATH="$FILEPATH"
             ;;
-        --remove_file|-rf)
+        --clear_file|-cf)
             REMOVE_FILE="true"; shift 1 ;;
         --help|-h)
             show_help; shift 1 ;;
@@ -115,7 +115,9 @@ fi
 if [ -n "$GET_FILEPATH" ]; then
     python3 $SCRIPT_DIR/deepseek-chat-dependence/core-tools/add_file.py
 fi
-
+if [ -n "$REMOVE_FILE" ]; then
+    python3 $SCRIPT_DIR/deepseek-chat-dependence/core-tools/clear_file.py
+fi
 # 检查是否提供了对话
 # if[HISTORY_OPERATION == "show_history" ]; then
 #     python3 ./deepseek-chat-dependence/core-tools/show_history.py
@@ -131,9 +133,6 @@ case "$HISTORY_OPERATION" in
         ;;
 esac
 
-if [ -n "$REMOVE_FILE" ]; then
-    python3 $SCRIPT_DIR/deepseek-chat-dependence/core-tools/clear_file.py
-fi
 
 # if ["$QUESTION"==""]; then
 # else 
@@ -141,9 +140,10 @@ fi
 # fi
 case "$QUESTION" in
     "")
-        exit 1
+        exit 0
         ;;
     *)
         python3 $SCRIPT_DIR/deepseek-chat-dependence/core-tools/getAnswer.py
         ;;
 esac
+exit 0
