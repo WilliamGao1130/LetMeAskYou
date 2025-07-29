@@ -13,7 +13,7 @@ mkdir -p "$HISTORY_DIR"
 LAST_SESSION_FILE="${DEPENDENCE_DIR}/last_session.txt"
 
 # 检查虚拟环境是否存在
-VENV_PATH="${HOME}/Documents/python/bin/activate"
+VENV_PATH="${SCRIPT_DIR}/python/bin/activate"
 if [ ! -f "$VENV_PATH" ]; then
     echo "错误：未找到虚拟环境 $VENV_PATH"
     exit 1

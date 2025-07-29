@@ -3,3 +3,4 @@ deepseek-chat-dependence/chat_history/*
 deepseek-chat-dependence/last_session.txt
 .DS_Store
 ._*
+python/

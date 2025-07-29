@@ -3,17 +3,23 @@
 ## 安装
 
 ### 1. 安装Python环境
+
 - **MacOS**:
   1. 打开终端。
   2. 运行以下命令安装Homebrew（如果尚未安装）：
+
      ```bash
      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
      ```
+
   3. 安装Python 3：
+
      ```bash
      brew install python3
      ```
+
   4. 验证安装：
+
      ```bash
      python3 --version
      pip3 --version
@@ -29,45 +35,11 @@
      ```
   4. 进入安装目录，将python文件复制一份，重命名为python3。
 
-### 2. 创建虚拟环境
-1. 打开终端或命令提示符。
-2. 导航到你的文档目录（MacOS/Linux）：
-   ```bash
-   cd ~/Documents
-   ```
-   Windows：
-   ```cmd
-   cd %USERPROFILE%\Documents
-   ```
-3. 创建并进入`python`目录：
-   ```bash
-   mkdir python && cd python
-   ```
-4. 创建虚拟环境：
-   ```bash
-   python3 -m venv venv
-   ```
-   Windows：
-   ```cmd
-   python -m venv venv
-   ```
-5. 激活虚拟环境：
-   - MacOS/Linux：
-     ```bash
-     source venv/bin/activate
-     ```
-   - Windows：
-     ```cmd
-     venv\Scripts\activate
-     ```
+- **Linux**:
 
-### 3. 安装依赖库
-1. 在虚拟环境中，安装`openai`库：
-   ```bash
-   pip install openai
-   ```
+  1. 安装python3和python3-pip和python3-venv。
 
-### 4. 克隆存储库
+### 2. 克隆存储库
 1. 克隆存储库到本地：
    ```bash
    git clone https://github.com/WilliamGao1130/LetMeAskYou.git
@@ -75,6 +47,32 @@
 2. 进入项目目录：
    ```bash
    cd LetMeAskYou
+   ```
+
+### 3. 创建虚拟环境
+
+1. 创建虚拟环境：
+   ```bash
+   python3 -m venv python
+   ```
+   Windows：
+   ```cmd
+   python -m venv python
+   ```
+2. 激活虚拟环境：
+   - MacOS/Linux：
+     ```bash
+     source python/bin/activate
+     ```
+   - Windows：
+     ```cmd
+     python\Scripts\activate
+     ```
+
+### 4. 安装依赖库
+1. 在虚拟环境中，安装`openai`库：
+   ```bash
+   pip install openai
    ```
 
 ### 5. 配置系统PATH
